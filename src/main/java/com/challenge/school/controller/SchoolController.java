@@ -56,7 +56,7 @@ public class SchoolController {
 		
 		// search
 	    Page<School> schools = schoolService.findAll(spec, pageable);
-	    return schools.map(schoolMapper::toDto);
+	    return schools.map(schoolMapper::toDtoLight);
     }
 
     @GetMapping("/{id}")
@@ -68,13 +68,13 @@ public class SchoolController {
     @ResponseStatus(HttpStatus.CREATED)
     public SchoolDto create(@Valid @RequestBody SchoolCreateDto dto) {
         School school = schoolService.create(dto);
-        return this.schoolMapper.toDto(school);
+        return this.schoolMapper.toDtoLight(school);
     }
 
     @PutMapping("/{id}")
     public SchoolDto update(@PathVariable Long id, @Valid @RequestBody SchoolUpdateDto dto) {
         School school = schoolService.update(id, dto);
-        return this.schoolMapper.toDto(school);
+        return this.schoolMapper.toDtoLight(school);
     }
 
     @DeleteMapping("/{id}")

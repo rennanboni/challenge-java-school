@@ -12,9 +12,9 @@ import com.challenge.school.dto.SchoolUpdateDto;
 @Mapper(componentModel = "spring")
 public interface SchoolMapper {
 
-    SchoolDto toDto(School entity);
-    @Mapping(target = "students", ignore = true)
-    SchoolDto toDtoWithoutStudents(School entity);
+	SchoolDto toDto(School entity);
+	@Mapping(target = "students", ignore = true)
+    SchoolDto toDtoLight(School entity);
     
     School toEntity(SchoolCreateDto dto);
 

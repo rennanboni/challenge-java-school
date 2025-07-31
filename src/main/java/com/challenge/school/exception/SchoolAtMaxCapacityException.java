@@ -5,7 +5,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
 public class SchoolAtMaxCapacityException extends RuntimeException {
-    public SchoolAtMaxCapacityException(String message) {
+    private static final long serialVersionUID = -1081485624146719688L;
+
+	public SchoolAtMaxCapacityException(String message) {
         super(message);
     }
 }

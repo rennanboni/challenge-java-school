@@ -10,6 +10,7 @@ import com.challenge.school.domain.School;
 import com.challenge.school.domain.Student;
 import com.challenge.school.dto.StudentCreateDto;
 import com.challenge.school.dto.StudentUpdateDto;
+import com.challenge.school.exception.BadRequestException;
 import com.challenge.school.exception.ResourceNotFoundException;
 import com.challenge.school.exception.SchoolAtMaxCapacityException;
 import com.challenge.school.mapper.StudentMapper;
@@ -35,9 +36,9 @@ public class StudentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + id));
     }
 
-    public Student create(StudentCreateDto StudentCreateDto) {
-    	this.schoolService.findById(StudentCreateDto.getSchoolId());
-        Student entity = studentMapper.toEntity(StudentCreateDto);
+    public Student create(StudentCreateDto dto) {
+    	this.schoolService.findById(dto.getSchoolId());
+        Student entity = studentMapper.toEntity(dto);
         
         // validation
         validateOrFail(entity);
@@ -46,9 +47,10 @@ public class StudentService {
         return this.studentRepository.save(entity);
     }
 
-    public Student update(Long id, StudentUpdateDto StudentUpdateDto) {
+    public Student update(Long id, StudentUpdateDto dto) {
         Student entity = this.findById(id);
-        this.studentMapper.updateFromDto(StudentUpdateDto, entity);
+        this.studentMapper.updateFromDto(dto, entity);
+        if (entity.getSchool().getId() != dto.getSchoolId()) entity.setSchool(this.schoolService.findById(dto.getSchoolId()));
         
         // validation
         validateOrFail(entity);
@@ -56,13 +58,22 @@ public class StudentService {
         // save
         return studentRepository.save(entity);
     }
+    
+    public void delete(Long schoolId, Long id) {
+    	Student entity = this.findById(id);
+    	if (entity.getSchool().getId() != schoolId) {
+    		throw new BadRequestException(String.format("Student '%s' does not belong to school '%s'", entity.getName(), schoolId));
+    	}
+    	
+    	this.studentRepository.delete(entity);
+    }
 
     public void delete(Long id) {
     	this.studentRepository.delete(this.findById(id));
     }
     
     private void validateOrFail(Student entity) {
-    	if (entity.getId() == null) this.checkMaxCapacitySchool(entity);
+    	this.checkMaxCapacitySchool(entity);
     }
     
     private void checkMaxCapacitySchool(Student entity) {

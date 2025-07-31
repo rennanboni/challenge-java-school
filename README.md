@@ -1,4 +1,4 @@
-# Shalion Teamtailor Challenge
+https://github.com/rennanboni/shalion.teamtailor-challenge2.git# Shalion Teamtailor Challenge
 
 This is a simple REST API to manage schools and students, built with Java, Spring Boot, Gradle, and PostgreSQL.
 
@@ -55,8 +55,8 @@ The API provides the following endpoints:
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/rennanboni/shalion.teamtailor-challenge2.git
-   cd shalion.teamtailor-challenge2
+   git clone git@github.com:rennanboni/challenge-java-school.git
+   cd challenge-java-school
    ```
 
 2. **Start the PostgreSQL database:**
@@ -97,13 +97,13 @@ You can also run the application using Docker.
 1. **Build the Docker image:**
 
    ```bash
-   docker build -t shalion-challenge .
+   docker build -t school-challenge .
    ```
 
 2. **Run the Docker container:**
 
    ```bash
-   docker run -p 8080:8080 --name shalion-app --link postgres_db:postgres -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres shalion-challenge
+   docker run -p 8080:8080 --name school-db --link postgres_db:postgres -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres school-challenge
    ```
 
    This will start the application in a Docker container and connect it to the PostgreSQL container.

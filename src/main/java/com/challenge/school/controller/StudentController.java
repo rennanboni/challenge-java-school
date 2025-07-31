@@ -76,14 +76,14 @@ public class StudentController {
 
     @PutMapping("/{id}")
     public StudentDto updateStudent(@PathVariable Long schoolId, @PathVariable Long id, @Valid @RequestBody StudentUpdateDto dto) {
-        dto.setSchoolId(schoolId);
+        if (dto.getSchoolId() == null) dto.setSchoolId(schoolId);
         Student student = studentService.update(id, dto);
         return this.studentMapper.toDto(student);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteStudent(@PathVariable Long id) {
-    	this.studentService.delete(id);
+    public void deleteStudent(@PathVariable Long schoolId, @PathVariable Long id) {
+    	this.studentService.delete(schoolId, id);
     }
 }
