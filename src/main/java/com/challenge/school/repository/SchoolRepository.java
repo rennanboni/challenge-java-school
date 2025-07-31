@@ -1,5 +1,6 @@
 package com.challenge.school.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +11,10 @@ import com.challenge.school.domain.School;
 
 @Repository
 public interface SchoolRepository extends JpaRepository<School, Long>, JpaSpecificationExecutor<School> {
+	
     Optional<School> findByName(String name);
-//    Page<School> findByNameContainingIgnoreCase(String name, Pageable pageable);
+    
+    int countByName(String name);
+    
+    int countByNameAndIdNotIn(String name, List<Long> excludedIds);
 }

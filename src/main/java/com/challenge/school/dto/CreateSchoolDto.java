@@ -10,7 +10,7 @@ public class CreateSchoolDto {
     @NotBlank
     private String name;
 
-    @Min(50)
-    @Max(2000)
+    @Min(value = 50, message = "Capacity should be at least 50")
+    @Max(value = 2000, message = "Capacity should be maximum 2000")
     private Integer maxCapacity;
 }
