@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.challenge.school.domain.School;
 import com.challenge.school.domain.specification.SchoolSpecification;
-import com.challenge.school.dto.CreateSchoolDto;
-import com.challenge.school.dto.UpdateSchoolDto;
+import com.challenge.school.dto.SchoolCreateDto;
+import com.challenge.school.dto.SchoolUpdateDto;
 import com.challenge.school.exception.DuplicateResourceException;
 import com.challenge.school.exception.ResourceNotFoundException;
 import com.challenge.school.mapper.SchoolMapper;
@@ -31,7 +31,7 @@ public class SchoolService {
                 .orElseThrow(() -> new ResourceNotFoundException("School not found with id: " + id));
     }
 
-    public School create(CreateSchoolDto dto) {
+    public School create(SchoolCreateDto dto) {
     	School entity = this.schoolMapper.toEntity(dto);
     	
     	// validation
@@ -41,7 +41,7 @@ public class SchoolService {
         return this.schoolRepository.save(entity);
     }
 
-    public School update(Long id, UpdateSchoolDto dto) {
+    public School update(Long id, SchoolUpdateDto dto) {
         School entity = this.findById(id);
         schoolMapper.updateFromDto(dto, entity);
         

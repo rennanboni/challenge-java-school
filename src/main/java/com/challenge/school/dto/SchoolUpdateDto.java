@@ -2,12 +2,10 @@ package com.challenge.school.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class CreateSchoolDto {
-    @NotBlank
+public class SchoolUpdateDto {
     private String name;
 
     @Min(value = 50, message = "Capacity should be at least 50")

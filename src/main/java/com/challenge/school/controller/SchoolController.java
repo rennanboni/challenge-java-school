@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.challenge.school.domain.School;
 import com.challenge.school.domain.specification.SchoolSpecification;
-import com.challenge.school.dto.CreateSchoolDto;
+import com.challenge.school.dto.SchoolCreateDto;
 import com.challenge.school.dto.SchoolDto;
-import com.challenge.school.dto.UpdateSchoolDto;
+import com.challenge.school.dto.SchoolUpdateDto;
 import com.challenge.school.mapper.SchoolMapper;
 import com.challenge.school.service.SchoolService;
 
@@ -61,25 +61,25 @@ public class SchoolController {
 
     @GetMapping("/{id}")
     public SchoolDto findById(@PathVariable Long id) {
-        return schoolMapper.toDto(schoolService.findById(id));
+        return this.schoolMapper.toDto(schoolService.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SchoolDto create(@Valid @RequestBody CreateSchoolDto dto) {
+    public SchoolDto create(@Valid @RequestBody SchoolCreateDto dto) {
         School school = schoolService.create(dto);
-        return schoolMapper.toDto(school);
+        return this.schoolMapper.toDto(school);
     }
 
     @PutMapping("/{id}")
-    public SchoolDto update(@PathVariable Long id, @Valid @RequestBody UpdateSchoolDto dto) {
+    public SchoolDto update(@PathVariable Long id, @Valid @RequestBody SchoolUpdateDto dto) {
         School school = schoolService.update(id, dto);
-        return schoolMapper.toDto(school);
+        return this.schoolMapper.toDto(school);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        schoolService.delete(id);
+    	this.schoolService.delete(id);
     }
 }

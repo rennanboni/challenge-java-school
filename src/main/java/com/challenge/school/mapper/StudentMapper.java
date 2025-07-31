@@ -5,9 +5,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import com.challenge.school.domain.Student;
-import com.challenge.school.dto.CreateStudentDto;
+import com.challenge.school.dto.StudentCreateDto;
 import com.challenge.school.dto.StudentDto;
-import com.challenge.school.dto.UpdateStudentDto;
+import com.challenge.school.dto.StudentUpdateDto;
 import com.challenge.school.repository.SchoolRepository;
 
 @Mapper(componentModel = "spring", uses = { SchoolRepository.class })
@@ -17,7 +17,7 @@ public abstract class StudentMapper {
 	public abstract StudentDto toDto(Student entity);
 
     @Mapping(source = "schoolId", target = "school.id")
-    public abstract Student toEntity(CreateStudentDto dto);
+    public abstract Student toEntity(StudentCreateDto dto);
 
-    public abstract void updateFromDto(UpdateStudentDto dto, @MappingTarget Student entity);
+    public abstract void updateFromDto(StudentUpdateDto dto, @MappingTarget Student entity);
 }
