@@ -13,6 +13,7 @@ import com.challenge.school.dto.StudentDto;
 import com.challenge.school.dto.UpdateStudentDto;
 import com.challenge.school.mapper.StudentMapper;
 import com.challenge.school.service.StudentService;
+import org.mapstruct.factory.Mappers;
 
 @RestController
 @RequestMapping("/students")
@@ -20,7 +21,7 @@ import com.challenge.school.service.StudentService;
 public class StudentController {
     private final StudentService studentService;
     private final StudentMapper studentMapper;
-    
+
     @GetMapping
     public Page<StudentDto> listStudents(@RequestParam Long schoolId, @RequestParam(required = false) String name, Pageable pageable) {
         Page<Student> students = studentService.listStudents(schoolId, name, pageable);

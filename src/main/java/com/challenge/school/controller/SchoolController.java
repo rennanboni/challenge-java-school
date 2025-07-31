@@ -14,14 +14,15 @@ import com.challenge.school.dto.SchoolDto;
 import com.challenge.school.dto.UpdateSchoolDto;
 import com.challenge.school.mapper.SchoolMapper;
 import com.challenge.school.service.SchoolService;
+import org.mapstruct.factory.Mappers;
 
 @RestController
 @RequestMapping("/schools")
 @RequiredArgsConstructor
 public class SchoolController {
-	
+
 	private final SchoolService schoolService;
-    private final SchoolMapper schoolMapper;
+	private final SchoolMapper schoolMapper;
 
     @GetMapping
     public Page<SchoolDto> listSchools(@RequestParam(required = false) String name, Pageable pageable) {
