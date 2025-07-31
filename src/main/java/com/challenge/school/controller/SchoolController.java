@@ -1,20 +1,32 @@
 package com.challenge.school.controller;
 
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.challenge.school.domain.School;
+import com.challenge.school.domain.specification.SchoolSpecification;
 import com.challenge.school.dto.CreateSchoolDto;
 import com.challenge.school.dto.SchoolDto;
 import com.challenge.school.dto.UpdateSchoolDto;
 import com.challenge.school.mapper.SchoolMapper;
 import com.challenge.school.service.SchoolService;
-import org.mapstruct.factory.Mappers;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/schools")
@@ -25,32 +37,49 @@ public class SchoolController {
 	private final SchoolMapper schoolMapper;
 
     @GetMapping
-    public Page<SchoolDto> listSchools(@RequestParam(required = false) String name, Pageable pageable) {
-        Page<School> schools = schoolService.listSchools(name, pageable);
-        return schools.map(schoolMapper::toDto);
+    public Page<SchoolDto> findAll(
+		@RequestParam(required = false) String name,
+		@RequestParam(required = false) String nameLike,
+		
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size,
+		@RequestParam(defaultValue = "id,asc") String[] sorts) {
+    	
+    	// pagination
+		Sort sort = Sort.by(Sort.Direction.fromString(sorts[1]), sorts[0]);
+		Pageable pageable = PageRequest.of(page,  size, sort);
+		
+		// filters
+		Specification<School> spec = Specification
+				.where(SchoolSpecification.hasName(name))
+				.and(SchoolSpecification.hasNameLike(nameLike));
+		
+		// search
+	    Page<School> schools = schoolService.findAll(spec, pageable);
+	    return schools.map(schoolMapper::toDto);
     }
 
     @GetMapping("/{id}")
-    public SchoolDto getSchool(@PathVariable Long id) {
-        return schoolMapper.toDto(schoolService.getSchool(id));
+    public SchoolDto findById(@PathVariable Long id) {
+        return schoolMapper.toDto(schoolService.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SchoolDto createSchool(@Valid @RequestBody CreateSchoolDto dto) {
-        School school = schoolService.createSchool(dto);
+    public SchoolDto create(@Valid @RequestBody CreateSchoolDto dto) {
+        School school = schoolService.create(dto);
         return schoolMapper.toDto(school);
     }
 
     @PutMapping("/{id}")
-    public SchoolDto updateSchool(@PathVariable Long id, @Valid @RequestBody UpdateSchoolDto dto) {
-        School school = schoolService.updateSchool(id, dto);
+    public SchoolDto update(@PathVariable Long id, @Valid @RequestBody UpdateSchoolDto dto) {
+        School school = schoolService.update(id, dto);
         return schoolMapper.toDto(school);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteSchool(@PathVariable Long id) {
-        schoolService.deleteSchool(id);
+    public void delete(@PathVariable Long id) {
+        schoolService.delete(id);
     }
 }

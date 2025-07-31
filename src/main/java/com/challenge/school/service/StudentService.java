@@ -1,10 +1,8 @@
 package com.challenge.school.service;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +14,8 @@ import com.challenge.school.exception.ResourceNotFoundException;
 import com.challenge.school.exception.SchoolAtMaxCapacityException;
 import com.challenge.school.repository.StudentRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
 @RequiredArgsConstructor
 public class StudentService {
@@ -23,23 +23,19 @@ public class StudentService {
     private final SchoolService schoolService;
 	
     @Transactional(readOnly = true)
-    public Page<Student> listStudents(Long schoolId, String name, Pageable pageable) {
-        if (name != null) {
-            return studentRepository.findBySchoolIdAndNameContainingIgnoreCase(schoolId, name, pageable);
-        } else {
-            return studentRepository.findAll(pageable);
-        }
+    public Page<Student> findAll(Specification<Student> spec, Pageable pageable) {
+    	return studentRepository.findAll(spec, pageable);
     }
 
     @Transactional(readOnly = true)
-    public Student getStudent(Long id) {
+    public Student findById(Long id) {
         return studentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + id));
     }
 
     @Transactional
-    public Student createStudent(CreateStudentDto dto) {
-        School school = schoolService.getSchool(dto.getSchoolId());
+    public Student create(CreateStudentDto dto) {
+        School school = schoolService.findById(dto.getSchoolId());
 
         if (school.getStudents().size() >= school.getMaxCapacity()) {
             throw new SchoolAtMaxCapacityException("School with id " + dto.getSchoolId() + " is at maximum capacity");
@@ -52,15 +48,15 @@ public class StudentService {
     }
 
     @Transactional
-    public Student updateStudent(Long id, UpdateStudentDto dto) {
-        Student student = getStudent(id);
+    public Student update(Long id, UpdateStudentDto dto) {
+        Student student = findById(id);
 
         if (dto.getName() != null) {
             student.setName(dto.getName());
         }
 
         if (dto.getSchoolId() != null && !dto.getSchoolId().equals(student.getSchool().getId())) {
-            School school = schoolService.getSchool(dto.getSchoolId());
+            School school = schoolService.findById(dto.getSchoolId());
             if (school.getStudents().size() >= school.getMaxCapacity()) {
                 throw new SchoolAtMaxCapacityException("School with id " + dto.getSchoolId() + " is at maximum capacity");
             }
@@ -71,7 +67,7 @@ public class StudentService {
     }
 
     @Transactional
-    public void deleteStudent(Long id) {
-        studentRepository.delete(getStudent(id));
+    public void delete(Long id) {
+        studentRepository.delete(findById(id));
     }
 }
