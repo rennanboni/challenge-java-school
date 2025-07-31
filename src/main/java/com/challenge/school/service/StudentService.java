@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.challenge.school.domain.School;
 import com.challenge.school.domain.Student;
@@ -25,15 +24,13 @@ public class StudentService {
     private final SchoolService schoolService;
     private final StudentMapper studentMapper;
 	
-    @Transactional(readOnly = true)
     public Page<Student> findAll(Specification<Student> spec, Pageable pageable) {
     	return studentRepository.findAll(spec, pageable);
     }
 
-    @Transactional(readOnly = true)
     public Student findById(Long id) {
         return this.studentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + id));
+        		.orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + id));
     }
 
     public Student create(StudentCreateDto dto) {
